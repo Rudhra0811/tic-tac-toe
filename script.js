@@ -18,7 +18,8 @@ const gameState = {
         ties: 0
     },
     aiPlayer: 'O',
-    gameMode: 'pvp' // 'pvp' or 'ai'
+    gameMode: 'pvp', // 'pvp' or 'ai'
+    darkMode: false
 };
 
 const statusDisplay = document.querySelector('.status');
@@ -26,6 +27,7 @@ const cells = document.querySelectorAll('.cell');
 const resetButton = document.querySelector('.reset-button');
 const scoreDisplay = document.querySelector('.score-display');
 const gameModeToggle = document.querySelector('.game-mode-toggle');
+const darkModeToggle = document.querySelector('.dark-mode-toggle');
 
 function handleCellClick(clickedCellEvent) {
     const clickedCell = clickedCellEvent.target;
@@ -95,7 +97,7 @@ function handleRestartGame() {
     statusDisplay.textContent = `Player ${gameState.currentPlayer}'s turn`;
     cells.forEach(cell => {
         cell.textContent = '';
-        cell.style.backgroundColor = '#fff';
+        cell.classList.remove('winning-cell');
     });
     enableCells();
 
@@ -106,7 +108,7 @@ function handleRestartGame() {
 
 function highlightWinningCombination(combination) {
     combination.forEach(index => {
-        cells[index].style.backgroundColor = '#90EE90';
+        cells[index].classList.add('winning-cell');
     });
 }
 
@@ -156,9 +158,24 @@ function makeAiMove() {
     }
 }
 
+function toggleDarkMode() {
+    gameState.darkMode = !gameState.darkMode;
+    document.body.classList.toggle('dark-mode');
+    darkModeToggle.textContent = gameState.darkMode ? 'Light Mode' : 'Dark Mode';
+
+    // Update button styles for better visibility in dark mode
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+        button.style.color = gameState.darkMode ? '#ffffff' : '#ffffff';
+        button.style.border = gameState.darkMode ? '1px solid #ffffff' : 'none';
+    });
+}
+
+// Event Listeners
 cells.forEach(cell => cell.addEventListener('click', handleCellClick));
 resetButton.addEventListener('click', handleRestartGame);
 gameModeToggle.addEventListener('click', toggleGameMode);
+darkModeToggle.addEventListener('click', toggleDarkMode);
 
-// Initialize score display
+// Initialize the game
 updateScoreDisplay();
